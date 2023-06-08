@@ -1,11 +1,14 @@
 import { Modal } from "react-bootstrap"
 import { useState } from "react";
 import {Form} from "react-bootstrap";
+import {Button} from "react-bootstrap";
 import axios from "axios";
 function BookFormModal({show, onHide}){
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [status, setStatus] = useState('');
+  const [author, setAuthor] = useState('');
+
     console.log(show)
   
     const handleSubmit = (e) => {
@@ -15,6 +18,7 @@ function BookFormModal({show, onHide}){
         title: title,
         description: description,
         status: status,
+        author: author,
       };
     
       // Perform book creation logic or API call
@@ -45,6 +49,16 @@ function BookFormModal({show, onHide}){
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
+          </Form.Group>
+          <Form.Group controlId="formAuthor">
+            <Form.Label>Author</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter author name"
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+            />
+
         </Form.Group>
         <Form.Group controlId="description">
           <Form.Label>Description</Form.Label>
@@ -63,12 +77,12 @@ function BookFormModal({show, onHide}){
             onChange={(e) => setStatus(e.target.value)}
           />
         </Form.Group>
-        {/* <button onClick={function(){
-
-        }}>Add Book</button> */}
-        {/* <Button variant="primary" type="submit">
-          Add Book
-        </Button> */}
+        <Button variant="secondary" onClick={onHide}>
+            Cancel
+          </Button>
+          <Button variant="primary" type="submit">
+            Save Changes
+          </Button>
       </Form>
     </Modal.Body>
   </Modal>
