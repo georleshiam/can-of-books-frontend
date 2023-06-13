@@ -4,10 +4,12 @@ import Carousel from 'react-bootstrap/Carousel';
 import { Modal, Button, Form } from 'react-bootstrap';
 import BookFormModal from './BookFormModal';
 import "bootstrap/dist/css/bootstrap.min.css"
+import { useAuth0 } from '@auth0/auth0-react';
 
 function BestBooks() {
   const [books, setBooks] = useState([]);
   const [showModal, setShowModal] = useState(true);
+  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
 
   /* TODO: Make a GET request to your API to fetch all the books from the database  */
