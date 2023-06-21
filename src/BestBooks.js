@@ -6,10 +6,79 @@ import BookFormModal from './BookFormModal';
 import "bootstrap/dist/css/bootstrap.min.css"
 import { useAuth0 } from '@auth0/auth0-react';
 
+
+function EditBookModal({ book, show, onHide }) {
+  const [title, setTitle] = useState(book.title);
+  const [author, setAuthor] = useState(book.author);
+  const [description, setDescription] = useState(book.description);
+
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value);
+  };
+
+  const handleAuthorChange = (event) => {
+    setAuthor(event.target.value);
+  };
+
+  const handleDescriptionChange = (event) => {
+    setDescription(event.target.value);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const updatedBook = {
+      title: title,
+      author: author,
+      description: description,
+    };
+
+    axios
+      .put(`https://can-of-books-ppja.onrender.com/books/${book.id}`, updatedBook)
+      .then(function (response) {
+        // Update the book details on the page
+        // You can either refetch the books or update the specific book in the books state
+        console.log(response.data);
+        onHide(); // Close the modal after successful update
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  };
+
+  return (
+    <Modal show={show} onHide={onHide}>
+      <Modal.Header closeButton>
+        <Modal.Title>Edit Book</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="formTitle">
+            <Form.Label>Title</Form.Label>
+            <Form.Control type="text" value={title} onChange={handleTitleChange} />
+          </Form.Group>
+          <Form.Group controlId="formAuthor">
+            <Form.Label>Author</Form.Label>
+            <Form.Control type="text" value={author} onChange={handleAuthorChange} />
+          </Form.Group>
+          <Form.Group controlId="formDescription">
+            <Form.Label>Description</Form.Label>
+            <Form.Control as="textarea" value={description} onChange={handleDescriptionChange} />
+          </Form.Group>
+          <Button variant="primary" type="submit">
+            Save Changes
+          </Button>
+        </Form>
+      </Modal.Body>
+    </Modal>
+  );
+}
+
+
 function BestBooks() {
   const [books, setBooks] = useState([]);
-  const [showModal, setShowModal] = useState(true);
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
+    const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
 
   /* TODO: Make a GET request to your API to fetch all the books from the database  */
@@ -39,7 +108,8 @@ function BestBooks() {
       console.log(response.data);
     })
   },[])
-  const deleteBook = (id) => {
+  const deleteBook = (book) => {
+    
     axios
       .delete(`https://can-of-books-ppja.onrender.com/books/${id}`)
       .then(function (response) {
@@ -84,7 +154,7 @@ function BestBooks() {
       {/* Add Book Button */}
       <button onClick={()=>{setShowModal(true)}}>Add Book</button>
     {/* delete book button */}
-      <button onClick={() => deleteBook(books.id)}>Delete</button>
+      <button onClick={() => deleteBook(book)}>Delete</button>
 
       {/* Book Form Modal */}
       <BookFormModal show={showModal} onHide={()=>{setShowModal(false)}}/>
